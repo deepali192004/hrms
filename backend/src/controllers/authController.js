@@ -1,4 +1,4 @@
-
+const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const pool = require("../config/db");
@@ -105,10 +105,24 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { userId: user.user_id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "2h" }
-    );
+  { userId: user.user_id, role: user.role },
+  process.env.JWT_SECRET,
+  { expiresIn: "2h" }
+);
+
+const tokenHash = crypto
+  .createHash("sha256")
+  .update(token)
+  .digest("hex");
+
+const expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000);
+
+await pool.execute(
+  `INSERT INTO auth_sessions
+   (user_id, token_hash, expires_at)
+   VALUES (?, ?, ?)`,
+  [user.user_id, tokenHash, expiresAt]
+);
 
     return res.json({
       success: true,
