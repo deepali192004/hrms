@@ -37,7 +37,8 @@ const applyLeave = async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: "Please provide valid dates. End date must not be before start date.",
+        message:
+          "Please provide valid dates. End date must not be before start date.",
       });
     }
 
@@ -92,4 +93,123 @@ const getMyLeaves = async (req, res) => {
   }
 };
 
-module.exports = { applyLeave, getMyLeaves };
+// HOD: View pending leaves from the assigned department
+const getPendingLeaves = async (req, res) => {
+  try {
+    if (req.user.role !== "HOD") {
+      return res.status(403).json({
+        success: false,
+        message: "Only HOD can view pending department leaves.",
+      });
+    }
+
+    const [rows] = await pool.execute(
+      `SELECT
+         lr.leave_id,
+         lr.user_id,
+         lr.leave_type,
+         lr.start_date,
+         lr.end_date,
+         lr.reason,
+         lr.status,
+         lr.applied_on,
+         faculty.name AS faculty_name,
+         faculty.employee_id,
+         d.department_name
+       FROM leave_requests lr
+       JOIN teachers faculty ON faculty.user_id = lr.user_id
+       JOIN departments d ON d.department_id = faculty.department_id
+       JOIN teachers hod ON hod.teacher_id = d.hod_teacher_id
+       WHERE hod.user_id = ?
+         AND lr.status = 'Pending'
+       ORDER BY lr.applied_on ASC`,
+      [req.user.userId]
+    );
+
+    return res.json({
+      success: true,
+      leaves: rows,
+    });
+  } catch (error) {
+    console.error("Get pending leaves error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to fetch pending leave applications.",
+    });
+  }
+};
+
+// HOD: Approve or reject a pending leave
+const reviewLeave = async (req, res) => {
+  try {
+    if (req.user.role !== "HOD") {
+      return res.status(403).json({
+        success: false,
+        message: "Only HOD can review leave applications.",
+      });
+    }
+
+    const leaveId = Number(req.params.leaveId);
+    const { status, review_remarks } = req.body;
+
+    if (!Number.isInteger(leaveId) || leaveId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid leave ID.",
+      });
+    }
+
+    if (!["Approved", "Rejected"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Status must be Approved or Rejected.",
+      });
+    }
+
+    const remarks =
+      review_remarks == null ? null : String(review_remarks).trim();
+
+    const [result] = await pool.execute(
+      `UPDATE leave_requests lr
+       JOIN teachers faculty ON faculty.user_id = lr.user_id
+       JOIN departments d ON d.department_id = faculty.department_id
+       JOIN teachers hod ON hod.teacher_id = d.hod_teacher_id
+       SET lr.status = ?,
+           lr.reviewed_by = ?,
+           lr.review_remarks = ?
+       WHERE lr.leave_id = ?
+         AND lr.status = 'Pending'
+         AND hod.user_id = ?`,
+      [status, req.user.userId, remarks, leaveId, req.user.userId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Pending leave not found in your assigned department, or it has already been reviewed.",
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: `Leave application ${status.toLowerCase()} successfully.`,
+      leaveId,
+      status,
+    });
+  } catch (error) {
+    console.error("Review leave error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to review leave application.",
+    });
+  }
+};
+
+module.exports = {
+  applyLeave,
+  getMyLeaves,
+  getPendingLeaves,
+  reviewLeave,
+};
+
