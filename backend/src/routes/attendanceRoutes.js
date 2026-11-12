@@ -34,6 +34,35 @@ function calculateDistanceMeters(lat1, lon1, lat2, lon2) {
   );
 }
 
+router.get("/today", authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const [rows] = await db.query(
+      `SELECT a.class_id
+       FROM attendance a
+       INNER JOIN teachers t
+         ON t.teacher_id = a.teacher_id
+       WHERE t.user_id = ?
+         AND a.attendance_date = CURDATE()
+         AND a.verification_status = 'Verified'`,
+      [userId]
+    );
+
+    return res.status(200).json({
+      success: true,
+      verified_class_ids: rows.map((row) => row.class_id),
+    });
+  } catch (error) {
+    console.error("Fetch today's attendance error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Could not load today's attendance status",
+    });
+  }
+});
+
 // Start a scheduled class after timetable and GPS verification
 router.post("/start-class", authMiddleware, async (req, res) => {
   let connection;

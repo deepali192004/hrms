@@ -18,3 +18,6 @@ pnpm-debug.log*
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Nested old repository - keep locally, exclude from main GitHub project
+/hrms/

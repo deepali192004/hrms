@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="120" viewBox="0 0 600 120" role="img" aria-labelledby="title">
+  <title id="title">Faculty HRMS — text wordmark</title>
+  <rect width="600" height="120" rx="12" fill="#242044"/>
+  <text x="34" y="53" fill="#f9f7f2" font-family="Georgia,serif" font-size="25" letter-spacing="3">BANASTHALI VIDYAPITH</text>
+  <path d="M34 70h46" stroke="#bdb4d0" stroke-width="1"/>
+  <text x="34" y="96" fill="#c9c2d8" font-family="Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="4">FACULTY HRMS</text>
+</svg>

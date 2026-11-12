@@ -1,0 +1,30 @@
+.auth-page .login-heading h2 { max-width: 430px; }
+.auth-role-notice,
+.auth-reset-contract {
+  display: grid;
+  gap: 5px;
+  padding: 13px 14px;
+  border: 1px solid #e4dfef;
+  border-radius: 12px;
+  background: #f8f6fb;
+  color: #6d6880;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.auth-role-notice strong,
+.auth-reset-contract h3 { color: #373054; font-size: 12px; letter-spacing: .04em; }
+.auth-role-notice b { color: #514876; }
+.auth-field-gap { display: block; margin-top: 17px; }
+.auth-config-notice { margin: 18px 0 0; line-height: 1.55; }
+.auth-unconfirmed { color: #8c879a; font-weight: 500; letter-spacing: 0; text-transform: none; }
+.auth-footnote { display: flex; align-items: flex-start; gap: 6px; }
+.auth-footnote svg { flex: 0 0 auto; margin-top: 2px; }
+.auth-links { display: flex; justify-content: center; margin-top: 18px; }
+.auth-links .text-button { color: #5d5681; font-size: 13px; text-decoration: none; }
+.auth-links .text-button:hover { text-decoration: underline; }
+.auth-reset-contract { margin-top: 18px; background: #fffdfb; border-color: #ece4dc; }
+.auth-reset-contract h3, .auth-reset-contract p { margin: 0; }
+.auth-reset-contract code { display: block; padding: 7px 9px; overflow-x: auto; border-radius: 7px; background: #f0edf6; color: #554d78; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+@media (max-width: 860px) {
+  .auth-page .login-story { min-height: 340px; }
+}

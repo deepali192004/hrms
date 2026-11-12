@@ -1,0 +1,18 @@
+{
+  "routes": [
+    { "path": "/", "title": "Faculty HRMS Login" },
+    { "path": "/login", "title": "Faculty HRMS Login" },
+    { "path": "/faculty/dashboard", "title": "Faculty Dashboard" },
+    { "path": "/faculty/timetable", "title": "Faculty Weekly Timetable" },
+    { "path": "/faculty/profile", "title": "Faculty Profile" },
+    { "path": "/faculty/notifications", "title": "Faculty Notifications" },
+    { "path": "/hod/dashboard", "title": "HOD Dashboard" },
+    { "path": "/admin/dashboard", "title": "Admin Dashboard" },
+    { "path": "/preview/faculty/dashboard", "title": "Faculty Dashboard Preview" },
+    { "path": "/preview/faculty/timetable", "title": "Faculty Weekly Timetable Preview" },
+    { "path": "/preview/faculty/profile", "title": "Faculty Profile Preview" },
+    { "path": "/preview/faculty/notifications", "title": "Faculty Notifications Preview" },
+    { "path": "/preview/hod/dashboard", "title": "HOD Dashboard Preview" },
+    { "path": "/preview/admin/dashboard", "title": "Admin Dashboard Preview" }
+  ]
+}
